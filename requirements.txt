@@ -5,3 +5,4 @@ Flask-JWT-Extended
 Flask-SQLAlchemy
 Flask-Migrate
 Flask-Session
+python-dotenv
