@@ -1,0 +1,342 @@
+/* General Styles */
+
+/* Reset body styling to avoid centering */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f7f7f7; /* Light neutral background */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column; /* Stacks content vertically */
+    height: 100vh;
+    justify-content: flex-start; /* Aligns the content from top */
+}
+
+/* Navigation bar at the top */
+nav {
+    background-color: #444; /* Dark neutral gray */
+    color: white;
+    padding: 10px 20px;
+    text-align: right;
+    position: fixed; /* Fixed positioning to stay at the top */
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000; /* Ensures it's on top of other elements */
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 15px;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+/* Centered container */
+.container {
+    padding: 70px 20px 20px 20px; /* Top padding adjusted to make space for the navbar */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Horizontally centers the content */
+    justify-content: center; /* Vertically centers the content */
+    height: calc(100vh - 70px); /* Full height minus navbar height */
+}
+
+/* Center tabs container */
+.tabs {
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Center vertically */
+    margin-bottom: 20px;
+}
+
+/* Tab button styling */
+.tabs button {
+    background-color: #666; /* Light neutral gray */
+    border: 1px solid #ccc; /* Light gray border */
+    padding: 12px 24px;
+    margin: 0 10px;
+    cursor: pointer;
+    border-radius: 20px; /* Slightly rounded border */
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.tabs button:hover {
+    background-color: #333; /* Slightly darker gray on hover */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Increased shadow on hover */
+}
+
+/* Form styles */
+.input-form {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 15px; /* Rounded borders for the forms */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    text-align: center;
+}
+
+/* Input fields styling */
+input[type="email"],
+input[type="password"],
+input[type="text"],
+input[type="datetime-local"],
+select,
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc; /* Light gray border */
+    border-radius: 10px; /* Slightly rounded border */
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+/* Focus effect for input fields */
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="text"]:focus,
+input[type="datetime-local"]:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: #888; /* Medium gray border on focus */
+    box-shadow: 0 0 5px rgba(136, 136, 136, 0.7); /* Medium gray shadow on focus */
+}
+
+/* Style checkboxes to look consistent with input fields */
+#memberCheckboxContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Space between checkboxes */
+}
+
+#memberCheckboxContainer label {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 5px;
+    background-color: #f4f4f4; /* Light background color */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#memberCheckboxContainer input[type="checkbox"] {
+    margin-right: 5px;
+    accent-color: #66b3ff; /* Change the checkbox color */
+}
+
+/* Hover effect for checkboxes */
+#memberCheckboxContainer label:hover {
+    background-color: #e0e0e0;
+}
+
+/* Add a border around the container to frame checkboxes */
+#memberCheckboxContainer {
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+/* Project Tasks Container (Checkbox Styling) */
+#projectTasksContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Space between checkboxes */
+    border: 1px solid #ccc; /* Border around checkboxes */
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #f9f9f9; /* Light background */
+}
+
+/* Individual checkbox labels */
+#projectTasksContainer label {
+    display: flex;
+    align-items: center;
+    padding: 5px 10px;
+    border-radius: 5px;
+    background-color: #f4f4f4;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Checkbox input styling */
+#projectTasksContainer input[type="checkbox"] {
+    margin-right: 5px;
+    accent-color: #66b3ff; /* Checkbox color */
+}
+
+/* Hover effect for checkboxes */
+#projectTasksContainer label:hover {
+    background-color: #e0e0e0;
+}
+
+/* Submit button */
+button[type="submit"] {
+    background-color: #888; /* Medium gray */
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+/* Hover effect for submit button */
+button[type="submit"]:hover {
+    background-color: #666; /* Darker gray on hover */
+}
+
+/* Hide forms by default */
+#login-form, #register-form {
+    display: none;
+}
+
+#login-form.active, #register-form.active {
+    display: block;
+}
+
+/* Modal Styles */
+.modal-overlay {
+    display: none;
+    position: fixed; /* Fix the modal at the top of the page */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    z-index: 999; /* Ensure it's above other elements */
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+/* Close button styling for modals */
+.modal-content button.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: transparent;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #333;
+}
+
+/* Make sure content of the page stays behind when modal is visible */
+body.modal-open {
+    overflow: hidden;
+}
+
+/* Project and Task Table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+td button {
+    background-color: #66b3ff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+td button:hover {
+    background-color: #4a9bde;
+}
+
+/* Align buttons to the right */
+td:last-child {
+    text-align: left;
+}
+
+/* Add Project Button */
+button {
+    background-color: #66b3ff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #4a9bde;
+}
+
+button.task-del {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+button.task-del :hover{
+    background-color: #d32f2f; /* Darker red on hover */
+}
+
+.button-container {
+    display: flex;
+    align-items: center;
+}
+
+.delete-form {
+    margin: 0;
+    padding: 0;
+    display: inline-block; 
+}
+
+.status-dropdown {
+    font-weight: bold;
+    padding: 5px;
+    border-radius: 5px;
+    text-align: center;
+    background-color: white; /* Ensure background is visible */
+    color: black; /* Default text color */
+    border: 1px solid #ccc;
+}
+
+/* Apply colors for selected options */
+.status-dropdown option[value="Incomplete"] { background-color: rgb(200, 189, 189); color: black; }
+.status-dropdown option[value="In Progress"] { background-color: rgb(255, 255, 175); color: black; }
+.status-dropdown option[value="Completed"] { background-color: rgb(179, 255, 179); color: black; }
+
+/* Ensure the dropdown background changes based on selection */
+.status-dropdown.incomplete { background-color: rgb(200, 189, 189); color: black; }
+.status-dropdown.in-progress { background-color: rgb(255, 255, 175); color: black; }
+.status-dropdown.completed { background-color: rgb(179, 255, 179); color: black; }
+
