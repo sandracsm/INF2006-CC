@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<h2>My Projects</h2>
+<button onclick="showAddProjectModal()">+ Add Project</button>
+
+<table>
+    <thead>
+        <tr>
+            <th>Project Name</th>
+            <th>Project Members</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for project in projects %}
+        <tr>
+            <td>{{ project.ProjectName }}</td>
+            <td>
+                {% for member in project.ProjectMembers.split(',') %}
+                    {% set user = users_dict.get(member) %}
+                    {{ user.Name if user else "Unknown" }}<br>
+                {% endfor %}
+            </td>
+            <td>
+                <button onclick="showAddTaskModal('{{ project.ProjectID }}')">+ Add Task</button>
+                <button onclick="showEditProjectModal('{{ project.ProjectID }}')">Edit Project</button>
+                {% if project.ProjectOwner == session.user_id %}
+                    <a href="{{ url_for('project.manage_members', project_id=project.ProjectID) }}">
+                        <button>Manage Members</button>
+                    </a>
+                    <div class="button-container">
+                        <form method="POST" action="{{ url_for('project.delete_project', project_id=project.ProjectID) }}" class="delete-form">
+                            <button type="submit" class="task-del">Delete</button>
+                        </form>
+                    </div>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h2>My Tasks</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Task Title</th>
+            <th>Description</th>
+            <th>Project</th>
+            <th>Assigned Members</th>
+            <th>Priority</th>
+            <th>Deadline</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for task in tasks %}
+        <tr>
+            <td>{{ task.Title }}</td>
+            <td>{{ task.Description }}</td>
+            <td>{{ projects_dict[task.ProjectID|string] if task.ProjectID|string in projects_dict else 'N/A' }}</td>
+            <td>
+                {% for member in task.Members.split(',') %}
+                    {% set user = users_dict.get(member) %}
+                    {{ user.Name if user else "Unknown" }}<br>
+                {% endfor %}
+            </td>
+            <td>{{ task.Priority }}</td>
+            <td>{{ task.Deadline }}</td>
+            <td>
+                {% if session.user_id == task.TaskOwner or session.user_id|string in task.Members.split(',') %}
+                    <select class="status-dropdown {{ task.Status | lower }}" data-task-id="{{ task.TaskID }}" onchange="updateTaskStatus(this)">
+                        <option value="Incomplete" {% if task.Status == 'Incomplete' %}selected{% endif %}>Incomplete</option>
+                        <option value="In Progress" {% if task.Status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                        <option value="Completed" {% if task.Status == 'Completed' %}selected{% endif %}>Completed</option>
+                    </select>
+                {% else %}
+                    <span class="task-status {{ task.Status | lower }}">{{ task.Status }}</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if session.user_id == task.TaskOwner or session.user_id|string in task.Members.split(',') %}
+                    <button onclick="showEditTaskModal('{{ task.TaskID }}')">Edit</button>
+                {% endif %}
+                <div class="button-container">
+                    <form method="POST" action="{{ url_for('task.delete_task', task_id=task.TaskID) }}" class="delete-form">
+                        <button type="submit" class="task-del">Delete</button>
+                    </form>
+                </div> 
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Add Project Modal -->
+<div id="addProjectModal" class="modal-overlay">
+    <div class="modal-content">
+        <button class="close-btn" onclick="closeModal('addProjectModal')">×</button>
+        <form method="POST" action="{{ url_for('project.add_project') }}" onsubmit="return validateProject()" class="input-form">
+            <input type="text" name="name" placeholder="Project Name" required>
+            <button type="submit">Create Project</button>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Project Modal -->
+<div id="editProjectModal" class="modal-overlay">
+    <div class="modal-content">
+        <button class="close-btn" onclick="closeModal('editProjectModal')">×</button>
+        <form method="POST" id="editProjectForm" class="input-form">
+            <input type="hidden" name="project_id" id="editProjectId">
+            <input type="text" name="name" id="editProjectName" required>
+            
+            <h3>Delete Tasks in Project</h3>
+            <div id="projectTasksContainer"></div>
+
+            <button type="submit">Save Changes</button>
+        </form>
+    </div>
+</div>
+
+<!-- Add Task Modal -->
+<div id="addTaskModal" class="modal-overlay">
+    <div class="modal-content">
+        <button class="close-btn" onclick="closeModal('addTaskModal')">×</button>
+        
+        <form method="POST" action="{{ url_for('task.add_task') }}" onsubmit="return validateTask()" class="input-form">
+            <select id="projectDropdown" name="project_id" required onchange="loadProjectMembers(this.value)">
+                <option value="">Select Project</option>
+                {% for project in projects %}
+                <option value="{{ project.ProjectID }}">{{ project.ProjectName }}</option>
+                {% endfor %}
+            </select>
+
+            <div id="memberCheckboxContainer">
+                <!-- Checkboxes for members will be loaded here -->
+            </div>
+
+            <input type="text" name="title" placeholder="Task Title" required>
+            <input type="text" name="description" placeholder="Description" required>
+            <input type="datetime-local" name="deadline" id="addTaskDeadline" required>
+
+            <select name="priority" required>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+            </select>
+            <button type="submit">Add Task</button>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Task Modal -->
+<div id="editTaskModal" class="modal-overlay">
+    <div class="modal-content">
+        <button class="close-btn" onclick="closeModal('editTaskModal')">×</button>
+        <form method="POST" id="editTaskForm" class="input-form">
+            <input type="hidden" name="task_id" id="editTaskId">
+            <input type="text" name="title" id="editTaskTitle" required>
+            <input type="text" name="description" id="editTaskDescription" required>
+            <input type="datetime-local" name="deadline" id="editTaskDeadline" required>
+
+            <select name="priority" id="editTaskPriority" required>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+            </select>
+            <button type="submit">Save Changes</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

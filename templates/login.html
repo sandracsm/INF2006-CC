@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="tabs">
+    <button onclick="showTab('login')" class="active-tab">Login</button>
+    <button onclick="showTab('register')">Register</button>
+</div>
+
+<div id="login-form">
+    <form method="POST" action="{{ url_for('auth.login') }}" onsubmit="return validateLogin()" class="input-form">
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="password" name="password" placeholder="Password" required minlength="6">
+        <button type="submit">Login</button>
+    </form>
+</div>
+
+<div id="register-form" style="display:none;">
+    <form method="POST" action="{{ url_for('auth.register') }}" class="input-form">
+        <input type="text" name="name" placeholder="Full Name" required>
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <button type="submit">Register</button>
+    </form>
+</div>
+{% endblock %}

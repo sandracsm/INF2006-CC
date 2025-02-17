@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Members{% endblock %}
+
+{% block content %}
+<h2>Manage Members for {{ project.name }}</h2>
+
+<!-- Add Member Form -->
+<form method="POST" action="{{ url_for('project.add_member', project_id=project.ProjectID) }}">
+    <input type="email" name="email" placeholder="Enter user email" required>
+    <button type="submit">Add Member</button>
+</form>
+
+<h3>Current Members</h3>
+<ul>
+    {% for member in members %}
+    <li>
+        {{ member.Name }} ({{ member.Email }})
+        <form method="POST" action="{{ url_for('project.remove_member', project_id=project.ProjectID, user_id=member.UserID) }}" style="display:inline;">
+            <button type="submit">Remove</button>
+        </form>
+    </li>
+    {% endfor %}
+</ul>
+
+<a href="{{ url_for('home.home') }}">Back to Home</a>
+{% endblock %}

@@ -1,0 +1,7 @@
+Flask
+Flask-MySQL
+Flask-Bcrypt
+Flask-JWT-Extended
+Flask-SQLAlchemy
+Flask-Migrate
+Flask-Session
