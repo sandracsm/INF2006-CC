@@ -9,6 +9,7 @@ from routes.task import task_bp
 from routes.admin_auth import admin_bp
 from routes.admin_home import admin_home_bp
 from routes.errors import errors_bp  # ✅ Import errors blueprint
+from routes.profile import profile_bp
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -24,6 +25,7 @@ app.register_blueprint(task_bp)
 app.register_blueprint(admin_bp)
 app.register_blueprint(admin_home_bp)
 app.register_blueprint(errors_bp)  # ✅ Register the error handler blueprint
+app.register_blueprint(profile_bp)
 
 @app.route("/health")
 def health_check():
