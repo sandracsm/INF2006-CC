@@ -21,9 +21,11 @@
             <td>
                 {% for member in project.ProjectMembers.split(',') %}
                     {% set user = users_dict.get(member) %}
-                    {{ user.Name if user else "Unknown" }}<br>
+                    {% if user %}
+                        {{ user.Name }}<br>
+                    {% endif %}
                 {% endfor %}
-            </td>
+            </td>            
             <td>
                 <button onclick="showAddTaskModal('{{ project.ProjectID }}')">+ Add Task</button>
                 <button onclick="showEditProjectModal('{{ project.ProjectID }}')">Edit Project</button>

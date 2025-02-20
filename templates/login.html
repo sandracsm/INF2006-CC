@@ -16,12 +16,25 @@
     </form>
 </div>
 
+
 <div id="register-form" style="display:none;">
-    <form method="POST" action="{{ url_for('auth.register') }}" class="input-form">
+    <form method="POST" action="{{ url_for('auth.login') }}" class="input-form">
         <input type="text" name="name" placeholder="Full Name" required>
         <input type="email" name="email" placeholder="Email" required>
         <input type="password" name="password" placeholder="Password" required>
         <button type="submit">Register</button>
     </form>
 </div>
+
+<!-- Display Flash Messages -->
+{% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+        <div class="flash-messages">
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+
 {% endblock %}

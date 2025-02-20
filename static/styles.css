@@ -340,3 +340,56 @@ button.task-del :hover{
 .status-dropdown.in-progress { background-color: rgb(255, 255, 175); color: black; }
 .status-dropdown.completed { background-color: rgb(179, 255, 179); color: black; }
 
+.flash-messages {
+    margin: 10px 0;
+}
+
+.flash-messages {
+    margin: 10px 0;
+}
+
+.alert {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.error-container {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.error-container h1 {
+    font-size: 3rem;
+    color: #ff4d4d;
+}
+
+.error-container p {
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.error-container .btn {
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.error-container .btn:hover {
+    background-color: #0056b3;
+}

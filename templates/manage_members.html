@@ -3,7 +3,7 @@
 {% block title %}Manage Members{% endblock %}
 
 {% block content %}
-<h2>Manage Members for {{ project.name }}</h2>
+<h2>Manage Members for {{ project.ProjectName }}</h2>
 
 <!-- Add Member Form -->
 <form method="POST" action="{{ url_for('project.add_member', project_id=project.ProjectID) }}">
@@ -16,12 +16,27 @@
     {% for member in members %}
     <li>
         {{ member.Name }} ({{ member.Email }})
-        <form method="POST" action="{{ url_for('project.remove_member', project_id=project.ProjectID, user_id=member.UserID) }}" style="display:inline;">
-            <button type="submit">Remove</button>
-        </form>
+        {% if member.UserID != project.ProjectOwner %}  {# ✅ Hide remove button for owner #}
+            <form method="POST" action="{{ url_for('project.remove_member', project_id=project.ProjectID, user_id=member.UserID) }}" style="display:inline;">
+                <button type="submit">Remove</button>
+            </form>
+        {% else %}
+            <span class="owner-badge">(Project Owner)</span>  {# ✅ Show label instead of button #}
+        {% endif %}
     </li>
     {% endfor %}
 </ul>
+
+<!-- Display Flash Messages -->
+{% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+        <div class="flash-messages">
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
 
 <a href="{{ url_for('home.home') }}">Back to Home</a>
 {% endblock %}

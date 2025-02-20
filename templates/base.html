@@ -11,8 +11,10 @@
         {% if session.user_id %}
             <span>Welcome, {{ session.user_name }}</span>
             <a href="{{ url_for('auth.logout') }}">Logout</a>
+        {% elif session.admin_id %}
+            <span>Welcome, {{ session.admin_name }}</span>
+            <a href="{{ url_for('admin.admin_logout') }}">Logout</a> <!-- ✅ Fix this line -->
         {% else %}
-            <a href="{{ url_for('auth.login') }}">Login</a>
         {% endif %}
     </nav>
     

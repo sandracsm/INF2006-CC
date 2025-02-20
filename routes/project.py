@@ -39,7 +39,9 @@ def get_project_members_json(project_id):
         return jsonify({"error": "Project not found"}), 404
 
     member_ids = project.ProjectMembers.split(",")
-    members = User.query.filter(User.UserID.in_(member_ids)).all()
+    
+    # Fetch only **active users** (not disabled)
+    members = User.query.filter(User.UserID.in_(member_ids), User.Disabled == False).all()
 
     return jsonify({"members": [{"UserID": member.UserID, "Name": member.Name} for member in members]})
 
@@ -132,6 +134,10 @@ def add_member(project_id):
 
     if not new_member:
         flash("User not found!", "danger")
+        return redirect(url_for("project.manage_members", project_id=project_id))
+
+    if new_member.Disabled:
+        flash("This user is disabled and cannot be added to the project.", "danger")  # ✅ New check for disabled user
         return redirect(url_for("project.manage_members", project_id=project_id))
 
     if str(new_member.UserID) in project.ProjectMembers.split(","):

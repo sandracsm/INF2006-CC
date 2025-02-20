@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin - Manage Users{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Admin Dashboard - Manage Users</h2>
+
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>User ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.UserID }}</td>
+                    <td>{{ user.Name }}</td>
+                    <td>{{ user.Email }}</td>
+                    <td>
+                        {% if user.Disabled %}
+                            <span class="badge bg-danger">Disabled</span>
+                        {% else %}
+                            <span class="badge bg-success">Active</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form method="POST" action="{{ url_for('admin_home.disable_user', user_id=user.UserID) }}"
+                              onsubmit="return confirmDisable('{{ user.Name }}', '{{ user.Disabled }}')">
+                            <button type="submit" class="btn btn-warning">
+                                {% if user.Disabled %}Enable{% else %}Disable{% endif %}
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- JavaScript for Confirmation -->
+<script>
+    function confirmDisable(userName, isDisabled) {
+        let action = isDisabled ? "enable" : "disable";
+        return confirm(`Are you sure you want to ${action} user "${userName}"?`);
+    }
+</script>
+
+{% endblock %}
