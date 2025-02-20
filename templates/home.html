@@ -15,21 +15,17 @@
 
     <div class="dashboard-card">
         <h3>Task Distribution by Priority</h3>
-        <ul>
-            <li>Low: <strong>{{ priority_counts['Low'] }}</strong></li>
-            <li>Medium: <strong>{{ priority_counts['Medium'] }}</strong></li>
-            <li>High: <strong>{{ priority_counts['High'] }}</strong></li>
-        </ul>
+        <p>Low: <strong>{{ priority_counts['Low'] }}</strong></p>
+        <p>Medium: <strong>{{ priority_counts['Medium'] }}</strong></p>
+        <p>High: <strong>{{ priority_counts['High'] }}</strong></p>
     </div>
 
     <div class="dashboard-card">
         <h3>Task Distribution by Status</h3>
-        <ul>
-            <li>Incomplete: <strong>{{ status_counts['Incomplete'] }}</strong></li>
-            <li>In Progress: <strong>{{ status_counts['In Progress'] }}</strong></li>
-            <li>Completed: <strong>{{ status_counts['Completed'] }}</strong></li>
-            <li>Overdue: <strong>{{ status_counts['Overdue'] }}</strong></li>
-        </ul>
+        <p>Incomplete: <strong>{{ status_counts['Incomplete'] }}</strong></p>
+        <p>In Progress: <strong>{{ status_counts['In Progress'] }}</strong></p>
+        <p>Completed: <strong>{{ status_counts['Completed'] }}</strong></p>
+        <p>Overdue: <strong>{{ status_counts['Overdue'] }}</strong></p>
     </div>
 </div>
 

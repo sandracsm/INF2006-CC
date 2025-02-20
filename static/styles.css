@@ -346,10 +346,6 @@ button.task-del :hover{
     margin: 10px 0;
 }
 
-.flash-messages {
-    margin: 10px 0;
-}
-
 .alert {
     padding: 10px;
     margin-bottom: 10px;
