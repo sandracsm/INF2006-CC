@@ -1,16 +1,13 @@
 from dotenv import load_dotenv
 import os
 
-load_dotenv()  # This loads environment variables from a .env file
-
-# SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:Pa55w0rdYOU5uck@localhost/tmdb" # LOCAL
+# Load environment variables from a .env file
+load_dotenv()
 
 class Config:
-    SECRET_KEY = "inf2006"
-    SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:Pa55w0rdYOU5ucks@tmdb.cmno6h3huku9.us-east-1.rds.amazonaws.com/tmdb" # LOCAL
+    SECRET_KEY = os.getenv("SECRET_KEY")
+    SQLALCHEMY_DATABASE_URI = os.getenv("SQLALCHEMY_DATABASE_URI")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SESSION_TYPE = "filesystem"  # Store session data in local files
     SESSION_PERMANENT = False  # Session will expire when the browser closes
     SESSION_USE_SIGNER = True  # Prevents tampering
-
-
