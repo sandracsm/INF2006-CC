@@ -1,9 +1,8 @@
-from flask import Blueprint, jsonify, request, redirect, url_for, session, flash, render_template
+from flask import Blueprint, jsonify, request, redirect, url_for, session, flash, render_template, get_flashed_messages
 from models.database import db
 from models.project import Project
 from models.user import User
 from models.task import Task
-
 
 project_bp = Blueprint("project", __name__)
 
@@ -11,6 +10,7 @@ project_bp = Blueprint("project", __name__)
 @project_bp.route("/projects")
 def view_projects():
     if "user_id" not in session:
+        get_flashed_messages()
         flash("Please log in to continue", "warning")
         return redirect(url_for("auth.login"))
 
@@ -23,6 +23,7 @@ def add_project():
     if "user_id" not in session:
         return redirect(url_for("auth.login"))
 
+    get_flashed_messages()
     project_name = request.form["name"]
     new_project = Project(ProjectOwner=session["user_id"], ProjectMembers=str(session["user_id"]), ProjectName=project_name)
     
@@ -39,8 +40,6 @@ def get_project_members_json(project_id):
         return jsonify({"error": "Project not found"}), 404
 
     member_ids = project.ProjectMembers.split(",")
-    
-    # Fetch only **active users** (not disabled)
     members = User.query.filter(User.UserID.in_(member_ids), User.Disabled == False).all()
 
     return jsonify({"members": [{"UserID": member.UserID, "Name": member.Name} for member in members]})
@@ -49,11 +48,13 @@ def get_project_members_json(project_id):
 @project_bp.route("/projects/update/<int:project_id>", methods=["POST"])
 def update_project(project_id):
     if "user_id" not in session:
+        get_flashed_messages()
         flash("Unauthorized", "danger")
         return redirect(url_for("home.home"))
 
     project = Project.query.get(project_id)
     if not project or project.ProjectOwner != session["user_id"]:
+        get_flashed_messages()
         flash("You do not have permission to edit this project!", "danger")
         return redirect(url_for("home.home"))
 
@@ -71,15 +72,17 @@ def update_project(project_id):
 @project_bp.route("/projects/delete/<int:project_id>", methods=["POST"])
 def delete_project(project_id):
     if "user_id" not in session:
+        get_flashed_messages()
         flash("Unauthorized", "danger")
         return redirect(url_for("home.home"))
 
     project = Project.query.get(project_id)
     if not project or project.ProjectOwner != session["user_id"]:
+        get_flashed_messages()
         flash("You do not have permission to delete this project!", "danger")
         return redirect(url_for("home.home"))
 
-    Task.query.filter_by(ProjectID=project_id).delete()  # Delete all tasks
+    Task.query.filter_by(ProjectID=project_id).delete()
     db.session.delete(project)
     db.session.commit()
     
@@ -101,13 +104,13 @@ def get_project(project_id):
         "tasks": [{"TaskID": task.TaskID, "Title": task.Title} for task in tasks]
     })
 
-
 # View Members
 @project_bp.route("/projects/<int:project_id>/members")
 def manage_members(project_id):
     if "user_id" not in session:
         return redirect(url_for("auth.login"))
 
+    get_flashed_messages()
     project = Project.query.get(project_id)
     if not project or project.ProjectOwner != session["user_id"]:
         flash("You do not have permission to manage this project!", "danger")
@@ -124,6 +127,7 @@ def add_member(project_id):
     if "user_id" not in session:
         return redirect(url_for("auth.login"))
 
+    get_flashed_messages()
     project = Project.query.get(project_id)
     if not project or project.ProjectOwner != session["user_id"]:
         flash("You do not have permission to manage this project!", "danger")
@@ -137,7 +141,7 @@ def add_member(project_id):
         return redirect(url_for("project.manage_members", project_id=project_id))
 
     if new_member.Disabled:
-        flash("This user is disabled and cannot be added to the project.", "danger")  # ✅ New check for disabled user
+        flash("This user is disabled and cannot be added to the project.", "danger")
         return redirect(url_for("project.manage_members", project_id=project_id))
 
     if str(new_member.UserID) in project.ProjectMembers.split(","):
@@ -156,6 +160,7 @@ def remove_member(project_id, user_id):
     if "user_id" not in session:
         return redirect(url_for("auth.login"))
 
+    get_flashed_messages()
     project = Project.query.get(project_id)
     if not project or project.ProjectOwner != session["user_id"]:
         flash("You do not have permission to manage this project!", "danger")

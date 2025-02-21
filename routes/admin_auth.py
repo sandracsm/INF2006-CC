@@ -1,5 +1,5 @@
 from models.admin import Admin  # Add this line
-from flask import Blueprint, render_template, request, redirect, url_for, session, flash
+from flask import Blueprint, render_template, request, redirect, url_for, session, flash, get_flashed_messages
 from utils.authentication_helper import admin_required, is_admin_logged_in
 from flask_bcrypt import Bcrypt
 
@@ -11,6 +11,9 @@ def admin_login():
     if is_admin_logged_in():  
         flash("You are already logged in as an admin.", "info")
         return redirect(url_for("admin_home.admin_home"))
+
+    # ✅ Clear flash messages before adding new ones
+    get_flashed_messages()
 
     error = None  # Store error messages
 
@@ -28,15 +31,18 @@ def admin_login():
                 flash("Admin login successful!", "success")
                 return redirect(url_for("admin_home.admin_home"))
             else:
-                error = "Incorrect password."  # ✅ Show error if password is wrong
+                flash("Incorrect password.", "danger")  # ✅ Clear and show new message
         else:
-            error = "Invalid email or password."  # ✅ Show error if admin doesn't exist
+            flash("Invalid email or password.", "danger")  # ✅ Clear and show new message
 
     return render_template("admin_login.html", error=error)  # ✅ Pass error to template
 
 # Admin Logout Route
 @admin_bp.route("/admin_logout")
 def admin_logout():
+    # ✅ Clear flash messages before adding new ones
+    get_flashed_messages()
+
     session.pop("admin_id", None)
     session.pop("admin_name", None)
     flash("Admin logged out successfully.", "info")

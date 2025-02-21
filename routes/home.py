@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, session, redirect, url_for, flash
+from flask import Blueprint, render_template, session, redirect, url_for, flash, get_flashed_messages
 from models.database import db
 from models.project import Project
 from models.task import Task
@@ -6,12 +6,14 @@ from models.user import User
 from utils.authentication_helper import user_required  # Import helper function
 from routes.task import view_tasks  # ✅ Import the function
 
-
 home_bp = Blueprint("home", __name__)
 
 @home_bp.route("/")
 @user_required  # Restrict access to logged-in users only
 def home():
+    # ✅ Clear flash messages before adding new ones
+    get_flashed_messages()
+
     user_id = str(session["user_id"])
 
     # Fetch projects where the user is an owner or a member

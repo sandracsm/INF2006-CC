@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session, flash
+from flask import Blueprint, render_template, request, redirect, url_for, session, flash, get_flashed_messages
 from models.database import db
 from models.user import User
 from utils.authentication_helper import user_required
@@ -9,6 +9,9 @@ profile_bp = Blueprint("profile", __name__)
 @profile_bp.route("/profile", methods=["GET", "POST"])
 @user_required
 def profile():
+    # ✅ Clear flash messages before adding new ones
+    get_flashed_messages()
+
     user_id = session.get("user_id")
     user = User.query.get(user_id)
 

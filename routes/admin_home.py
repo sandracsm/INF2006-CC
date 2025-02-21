@@ -1,18 +1,11 @@
 import random
-from flask import Blueprint, render_template, request, redirect, url_for, session, flash
+from flask import Blueprint, render_template, request, redirect, url_for, session, flash, get_flashed_messages
 from models.database import db
 from models.user import User
 from models.project import Project
 from utils.authentication_helper import admin_required
 
 admin_home_bp = Blueprint("admin_home", __name__)
-
-
-# Admin Home Route (Only accessible by logged-in admins)
-# @admin_home_bp.route("/admin_home")
-# @admin_required
-# def admin_home():
-#     return render_template("admin_home.html")
 
 # Admin Home - User Management Page
 @admin_home_bp.route("/admin_home")
@@ -32,6 +25,9 @@ def admin_home():
 @admin_home_bp.route("/disable_user/<int:user_id>", methods=["POST"])
 @admin_required
 def disable_user(user_id):
+    # ✅ Clear flash messages before adding new ones
+    get_flashed_messages()
+
     user = User.query.get(user_id)
     if not user:
         flash("User not found.", "danger")

@@ -15,8 +15,7 @@ def login():
         return redirect(url_for("home.home"))
 
     # ✅ Clear flash messages when loading login page
-    if request.method == "GET":
-        get_flashed_messages()
+    get_flashed_messages()
 
     if request.method == "POST":
         email = request.form["email"]
@@ -33,17 +32,26 @@ def login():
                 session.clear()  # Remove any existing admin session
                 session["user_id"] = user.UserID  
                 session["user_name"] = user.Name  
+
                 flash("Login successful!", "success")
                 return redirect(url_for("home.home"))
             else:
-                flash("Incorrect password.", "danger")  # ✅ New error message for incorrect password
+                # ✅ Clear flash messages before adding a new one
+                get_flashed_messages()
+                flash("Incorrect password.", "danger")  
+
         else:
-            flash("Invalid email or password.", "danger")  # ✅ Keeps the same message for security reasons
+            # ✅ Clear flash messages before adding a new one
+            get_flashed_messages()
+            flash("Invalid email or password.", "danger")  
 
     return render_template("login.html")
 
 @auth_bp.route("/register", methods=["POST"])
 def register():
+    # ✅ Clear flash messages before adding a new one
+    get_flashed_messages()
+
     email = request.form["email"]
     password = request.form["password"]
     name = request.form["name"]
@@ -56,15 +64,19 @@ def register():
         flash("Password must be at least 6 characters.", "danger")
         return redirect(url_for("auth.login"))
 
-    hashed_password = bcrypt.generate_password_hash(request.form["password"]).decode("utf-8")
+    hashed_password = bcrypt.generate_password_hash(password).decode("utf-8")
     new_user = User(Name=name, Email=email, Password=hashed_password)
     db.session.add(new_user)
     db.session.commit()
+
     flash("Registration successful!", "success")
     return redirect(url_for("auth.login"))
 
 @auth_bp.route("/logout")
 def logout():
+    # ✅ Clear flash messages before adding a new one
+    get_flashed_messages()
+
     session.clear()  # Clear session data
     flash("You have been logged out.", "info")
     return redirect(url_for("auth.login"))

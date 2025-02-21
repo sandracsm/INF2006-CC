@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session, flash, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, session, flash, jsonify, get_flashed_messages
 from models.database import db
 from models.task import Task
 from models.project import Project
@@ -11,6 +11,7 @@ task_bp = Blueprint("task", __name__)
 @task_bp.route("/tasks")
 def view_tasks():
     if "user_id" not in session:
+        get_flashed_messages()
         flash("Please log in to continue", "warning")
         return redirect(url_for("auth.login"))
 
@@ -44,7 +45,6 @@ def view_tasks():
     ).all()
 
     return tasks
-    # return render_template("home.html", tasks=tasks)
 
 # Add Task
 @task_bp.route("/tasks/add", methods=["POST"])
@@ -52,6 +52,7 @@ def add_task():
     if "user_id" not in session:
         return jsonify({"error": "Unauthorized"}), 401
 
+    get_flashed_messages()
     title = request.form["title"]
     description = request.form["description"]
     deadline = request.form["deadline"]
@@ -84,8 +85,7 @@ def add_task():
     flash("Task added successfully!", "success")
     return redirect(url_for("home.home"))
 
-
-#Get Task
+# Get Task
 @task_bp.route("/tasks/<int:task_id>")
 def get_task(task_id):
     task = Task.query.get(task_id)
@@ -105,6 +105,7 @@ def update_task(task_id):
     if "user_id" not in session:
         return jsonify({"error": "Unauthorized"}), 401
 
+    get_flashed_messages()
     task = Task.query.get(task_id)
     if not task or (task.TaskOwner != session["user_id"] and str(session["user_id"]) not in task.Members.split(",")):
         flash("You do not have permission to edit this task!", "danger")
@@ -127,6 +128,7 @@ def update_task_status(task_id):
     if "user_id" not in session:
         return jsonify({"error": "Unauthorized"}), 401
 
+    get_flashed_messages()
     task = Task.query.get(task_id)
     if not task or (task.TaskOwner != session["user_id"] and str(session["user_id"]) not in task.Members.split(",")):
         return jsonify({"error": "You do not have permission to update this task!"}), 403
@@ -152,15 +154,13 @@ def update_task_status(task_id):
     db.session.commit()
     return jsonify({"success": True, "message": "Task status updated successfully!"})
 
-
-
-
 # Delete Task
 @task_bp.route("/tasks/delete/<int:task_id>", methods=["POST"])
 def delete_task(task_id):
     if "user_id" not in session:
         return jsonify({"error": "Unauthorized"}), 401
 
+    get_flashed_messages()
     task = Task.query.get(task_id)
     if not task or task.TaskOwner != session["user_id"]:
         flash("You do not have permission to delete this task!", "danger")
@@ -171,14 +171,13 @@ def delete_task(task_id):
     flash("Task deleted successfully!", "success")
     return redirect(url_for("home.home"))
 
-
 # Update Task Owner
-
 @task_bp.route("/tasks/change_owner/<int:task_id>", methods=["POST"])
 def change_task_owner(task_id):
     if "user_id" not in session:
         return jsonify({"error": "Unauthorized"}), 401
 
+    get_flashed_messages()
     task = Task.query.get(task_id)
     if not task or task.TaskOwner != session["user_id"]:
         flash("You do not have permission to transfer this task!", "danger")
@@ -196,4 +195,3 @@ def change_task_owner(task_id):
     
     flash(f"Task '{task.Title}' ownership transferred to {new_owner.Name}.", "success")
     return redirect(url_for("home.home"))
-
