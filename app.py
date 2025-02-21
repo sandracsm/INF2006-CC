@@ -1,6 +1,7 @@
 from flask import Flask
 from config import Config
 from flask_session import Session
+from werkzeug.middleware.proxy_fix import ProxyFix
 from models.database import db
 from routes.auth import auth_bp
 from routes.home import home_bp
@@ -26,6 +27,7 @@ app.register_blueprint(admin_bp)
 app.register_blueprint(admin_home_bp)
 app.register_blueprint(errors_bp)  # ✅ Register the error handler blueprint
 app.register_blueprint(profile_bp)
+app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 @app.route("/health")
 def health_check():
